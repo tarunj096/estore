@@ -4,6 +4,7 @@ import com.estore.dto.UserDto;
 import com.estore.model.User;
 import com.estore.repositories.UserRepository;
 import com.estore.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ public class UserServiceImplementation implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ModelMapper mapper;
     @Override
     public UserDto createUser(UserDto userDto) {
         String userId = UUID.randomUUID().toString();
@@ -64,29 +67,29 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDto getUserByEmail(String email) {
-        //userRepository.find
-        return null;
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("User not found with the email provided"));
+        return userToDto(user);
     }
 
     private UserDto userToDto(User savedUser) {
-        UserDto userDto = UserDto.builder()
-                .userId(savedUser.getUserId())
-                .name(savedUser.getName())
-                .email(savedUser.getEmail())
-                .password(savedUser.getPassword())
-                .about(savedUser.getAbout())
-                .build();
-        return userDto;
+//        UserDto userDto = UserDto.builder()
+//                .userId(savedUser.getUserId())
+//                .name(savedUser.getName())
+//                .email(savedUser.getEmail())
+//                .password(savedUser.getPassword())
+//                .about(savedUser.getAbout())
+//                .build();
+        return mapper.map(savedUser, UserDto.class);
     }
 
     private User dtoToUser(UserDto userDto) {
-        User user = User.builder()
-                .userId(userDto.getUserId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .about(userDto.getAbout())
-.build();
-        return user;
+//        User user = User.builder()
+//                .userId(userDto.getUserId())
+//                .name(userDto.getName())
+//                .email(userDto.getEmail())
+//                .password(userDto.getPassword())
+//                .about(userDto.getAbout())
+//.build();
+        return mapper.map(userDto, User.class);
     }
 }
