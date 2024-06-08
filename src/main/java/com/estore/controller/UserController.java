@@ -1,5 +1,6 @@
 package com.estore.controller;
 
+import com.estore.dto.ApiMessage;
 import com.estore.dto.UserDto;
 import com.estore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,10 @@ public class UserController {
     //delete
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable String userId){
+    public ResponseEntity<ApiMessage> deleteUser(@PathVariable String userId){
         userService.deleteUser(userId);
-        return new ResponseEntity<>("User deleted", HttpStatus.OK);
+        ApiMessage message = ApiMessage.builder().message("User deleted").error(true).status(HttpStatus.OK).build();
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     //getall
